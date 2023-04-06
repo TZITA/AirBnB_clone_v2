@@ -19,7 +19,7 @@ def do_pack():
 
     try:
         local("mkdir -p versions")
-        local("tar -cvzf versions/web_static_{}.tar.gz web_static".
+        local("tar -cvzf versions/web_static_{}.tar.gz web_static/".
                      format(str_now))
         return "/versions/web_static_{}.tar.gz".format(str_now)
     
