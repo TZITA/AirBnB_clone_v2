@@ -1,19 +1,27 @@
-#!/usr/bin/python3
-from fabric.api import local
-from time import strftime
-from datetime import date
+#!/usr/bin/env python3
+"""
+    A fabric script that generates a .tgz archive 
+    from the contents of the web_static.
+"""
+from fabric.api import *
+from datetime import datetime
 
 
 def do_pack():
-    """ A script that generates archive the contents of web_static folder"""
+    """
+    A function to compress and store the contents 
+    of the web_static files.
+    
+    Returns: The name of tar file.
+    """
+    now_n = datetime.now()
+    str_now = now_n.strftime("%Y%m%d%H%M%S")
 
-    filename = strftime("%Y%m%d%H%M%S")
-    try:
-        local("mkdir -p versions")
-        local("tar -czvf versions/web_static_{}.tgz web_static/"
-              .format(filename))
+    local("mkdir -p versions")
+    compress = local("tar -cvzf versions/web_static_{}.tar.gz web_static".
+                     format(str_now))
 
-        return "versions/web_static_{}.tgz".format(filename)
-
-    except Exception as e:
+    if compress is not None:
+        return "/versions/web_static_{}.tar.gz".format(str_now)
+    else:
         return None
