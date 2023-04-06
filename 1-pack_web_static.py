@@ -17,10 +17,11 @@ def do_pack():
     now_n = datetime.now()
     str_now = now_n.strftime("%Y%m%d%H%M%S")
 
-    local("mkdir -p versions")
-    compress = local("tar -cvzf versions/web_static_{}.tar.gz web_static".
+    try:
+        local("mkdir -p versions")
+        local("tar -cvzf versions/web_static_{}.tar.gz web_static".
                      format(str_now))
-
-    if compress is not None:
         return "/versions/web_static_{}.tar.gz".format(str_now)
-    return None
+    
+    except Exception:
+        return None
