@@ -20,7 +20,7 @@ def do_pack():
 
     try:
         local("mkdir -p versions")
-        local("tar -cvzf {} web_static/".format(file_c))
+        local("tar -cvzf {} web_static".format(file_c))
         return file_c
 
     except Exception:
