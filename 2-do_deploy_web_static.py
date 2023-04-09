@@ -1,56 +1,41 @@
 #!/usr/bin/python3
-"""Compress web static package
-"""
+""" Deploy web static archive."""
 from fabric.api import *
 from datetime import datetime
-from os import path
+import os.path
 
 
-env.hosts = ['100.25.19.204', '54.157.159.85']
-env.user = 'ubuntu'
-env.key_filename = '~/.ssh/id_rsa'
+env.hosts = ['34.224.62.19', '54.166.130.58']
 
 
 def do_deploy(archive_path):
-        """Deploy web files to server
-        """
-        try:
-                if not (path.exists(archive_path)):
-                        return False
+    """Deploy web files to server."""
+    try:
+        if not (os.path.exists(archive_path)):
+            return False
 
-                # upload archive
-                put(archive_path, '/tmp/')
+        put(archive_path, '/tmp/')
 
-                # create target dir
-                timestamp = archive_path[-18:-4]
-                run('sudo mkdir -p /data/web_static/\
-releases/web_static_{}/'.format(timestamp))
+        timeext = archive_path[11:25]
+        run('sudo mkdir -p /data/web_static/releases/web_static_{}/'.
+            format(timeext))
 
-                # uncompress archive and delete .tgz
-                run('sudo tar -xzf /tmp/web_static_{}.tgz -C \
-/data/web_static/releases/web_static_{}/'
-                    .format(timestamp, timestamp))
+        run('sudo tar -xzf /tmp/web_static_{}.tgz -C /data/web_static/\
+            releases/web_static_{}/'.format(timeext, timeext))
 
-                # remove archive
-                run('sudo rm /tmp/web_static_{}.tgz'.format(timestamp))
+        run('sudo rm /tmp/web_static_{}.tgz'.format(timeext))
 
-                # move contents into host web_static
-                run('sudo mv /data/web_static/releases/web_static_{}/web_static/* \
-/data/web_static/releases/web_static_{}/'.format(timestamp, timestamp))
+        run('sudo mv /data/web_static/releases/web_static_{}/web_static/* \
+            /data/web_static/releases/web_static_{}/'.format(timeext, timeext))
 
-                # remove extraneous web_static dir
-                run('sudo rm -rf /data/web_static/releases/\
-web_static_{}/web_static'
-                    .format(timestamp))
+        run('sudo rm -rf /data/web_static/releases/web_static_{}/web_static'
+            .format(timeext))
 
-                # delete pre-existing sym link
-                run('sudo rm -rf /data/web_static/current')
+        run('sudo rm -rf /data/web_static/current')
 
-                # re-establish symbolic link
-                run('sudo ln -s /data/web_static/releases/\
-web_static_{}/ /data/web_static/current'.format(timestamp))
-        except:
-                return False
+        run('sudo ln -s /data/web_static/releases/web_static_{}/ \
+            /data/web_static/current'.format(timeext))
 
-        # return True on success
-        return True
+    except Exception:
+        return False
+    return True
