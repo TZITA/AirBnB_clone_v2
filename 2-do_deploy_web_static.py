@@ -16,7 +16,7 @@ def do_deploy(archive_path):
 
         put(archive_path, '/tmp/')
 
-        timeext = archive_path[11:25]
+        timeext = archive_path[-18:-4]
         run('sudo mkdir -p /data/web_static/releases/web_static_{}/'.
             format(timeext))
 
