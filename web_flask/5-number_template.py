@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 """
-    A python script that displays Python followed by the value
-    of the text variable.
-    Underscores (_) are reolaced  with a space.
+    A python script that displays a HTML page only if n is an integer.
 """
 from flask import Flask, render_template
 

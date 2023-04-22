@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 """
-    A python script that displays /n is a number/ only if n is an integer.
+    A python script that displays a HTML page only if n is an integer.
+    H1 tag: n is even|odd inside the tag BODY.
 """
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -41,5 +42,19 @@ def number(n):
     return "%d is a number" % n
 
 
+@app.route("/number_template/<int:n>", strict_slashes=False)
+def num_tem(n):
+    """ Displays a HTML page only if n is an integer."""
+    return render_template("5-number.html", n=n)
+
+
+@app.route("/number_odd_or_even/<int:n>", strict_slashes=False)
+def odd_even(n):
+    """ Displays a HTML page only if n is an integer.
+        H1 tag: Number: n is even|odd inside the tag BODY.
+    """
+    return render_template("6-number_odd_or_even.html", n=n)
+
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    app.run(debug=True, port=5000, host="0.0.0.0")
