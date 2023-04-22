@@ -36,20 +36,18 @@ class DBStorage:
         Query on current database session all objects
         depending of the class name (argument cls)
         """
-        dictionary = {}
-        if cls is not None:
-            objs = self.__engine.query(cls)
-            for o in objs:
-                key = "{}.{}".format(type(o).__name__, o.id)
-                dictionary[key] = o
-            return dictionary
-        else:
+        if cls is None:
             objs = self.__session.query(State).all()
             objs.extend(self.__session.query(City).all())
             objs.extend(self.__session.query(User).all())
             objs.extend(self.__session.query(Place).all())
             objs.extend(self.__session.query(Review).all())
             objs.extend(self.__session.query(Amenity).all())
+        else:
+            if type(cls) == str:
+                cls = eval(cls)
+            objs = self.__session.query(cls)
+        return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
 
     def new(self, obj):
         """Add the object to the current database session"""
@@ -71,3 +69,7 @@ class DBStorage:
                            expire_on_commit=False)
         Session = scoped_session(ses)
         self.__session = Session()
+
+    def close(self):
+        """ Call remove() method on the private session attribute."""
+        self.__session.close()
